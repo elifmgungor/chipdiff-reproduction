@@ -20,7 +20,6 @@ def select_dhms_bins(hmm_table):
 
     Parameters:
         -hmm_table: Bin-level DataFrame returned by HMM inference.
-
     Returns:
         -dhms_bins: DataFrame containing only differential bins. 
     '''

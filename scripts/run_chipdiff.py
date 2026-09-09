@@ -18,7 +18,7 @@ def main():
                n_training_regions = 10000, random_state = 42,
                tolerance = 1e-6, max_iterations=100,
                rho = 0.95, verbose=True)
-    
+
     results_directory = project_root/'results/tables'
     results_directory.mkdir(parents=True,exist_ok=True)
 
