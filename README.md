@@ -2,13 +2,13 @@
 
 Python reproduction of the HMM-based differential histone modification method described in:
 
-> Xu H., Wei C.-L., Lin F., Sung W.-K.  
-> **An HMM approach to genome-wide identification of differential histone modification sites from ChIP-seq data.**  
-> *Bioinformatics*, 2008.
+Xu H, Wei C-L, Lin F, Sung W-K.  
+**An HMM approach to genome-wide identification of differential histone modification sites from ChIP-seq data.**  
+*Bioinformatics*. 2008;24(20):2344–2349.  
+doi:10.1093/bioinformatics/btn402
 
 This project reproduces the H3K27me3 ESC-versus-NPC analysis presented in the original ChIPDiff study. **ChIPDiff** is a computational method that uses a Hidden Markov Model (HMM) to identify differential histone modification sites between two ChIP-seq libraries.
 
----
 ## Biological context
 
 **ChIP-seq (Chromatin Immunoprecipitation Sequencing)** is a sequencing-based method used to study the genomic distribution of DNA-associated proteins and histone modifications. 
@@ -19,10 +19,7 @@ The  analysis compares H3K27me3 profiles between two mouse cell types:
 - **ESC — Embryonic Stem Cells**
 - **NPC — Neural Progenitor Cells**
 
-The objective is to identify genomic regions where H3K27me3 enrichment differs between ESC and NPC. These regions are referred to as **Differential Histone Modification Sites (DHMSs)**.
-
-The analysis is performed on the canonical chromosomes of the mouse mm8 genome assembly (`chr1–chr19`, `chrX`, and `chrY`).
----
+The objective is to identify genomic regions where H3K27me3 enrichment differs between ESC and NPC. These regions are referred to as **Differential Histone Modification Sites (DHMSs)**. The analysis is performed on the canonical chromosomes of the mouse mm8 genome assembly (`chr1–chr19`, `chrX`, and `chrY`).
 
 ## ChIPDiff workflow
 
@@ -49,7 +46,6 @@ Differential genomic bins
         ↓
 DHMS regions
 ```
----
 
 ## Input data and preprocessing
 
@@ -79,59 +75,32 @@ Additional metadata used by the project include:
 metadata/mm8.chrom.sizes
 metadata/mm8.refFlat.txt.gz
 ```
----
-
 ## Putative histone modification sites
 
 Before HMM inference, ChIPDiff filters genomic bins according to their normalized combined ChIP-seq signal.
 
-The filtering accounts for the sequencing depth of both libraries and uses:
-
-```text
-η = 0.7
-```
-
-as the assumed valid fraction of the genome.
+The filtering accounts for the sequencing depth of both libraries and uses: η = 0.7 as the assumed valid fraction of the genome.
 
 Bins passing the threshold are retained as **putative histone modification sites** and neighboring sites are grouped into regions.
 
----
 
 ## Bayesian intensity estimation
 
 For each genomic bin, histone modification intensity is modeled using a binomial likelihood with a Beta prior.
 
-The prior parameters are:
+The prior parameters are: α = 1  & β = m, where `m` is the total number of genomic bins. Posterior intensity distributions are estimated separately for ESC and NPC.
 
-```text
-α = 1
-β = m
-```
-
-where `m` is the total number of genomic bins.
-
-Posterior intensity distributions are estimated separately for ESC and NPC.
-
-A fold-change threshold of:
-
-```text
-τ = 3
-```
-
-is used to distinguish three possible states:
+A fold-change threshold of: τ = 3 is used to distinguish three possible states:
 
 ```text
 ND            = non-differential
 ESC-enriched  = higher H3K27me3 enrichment in ESC
 NPC-enriched  = higher H3K27me3 enrichment in NPC
 ```
----
 
 ## Hidden Markov Model
 
-For each genomic bin, the posterior intensity distributions are used to compute **emission weights**, which measure how compatible the observed ESC and NPC signals are with each hidden state.
-
-The HMM also models the spatial dependency between neighboring genomic bins using a **first-order Markov assumption**:
+For each genomic bin, the posterior intensity distributions are used to compute **emission weights**, which measure how compatible the observed ESC and NPC signals are with each hidden state. The HMM also models the spatial dependency between neighboring genomic bins using a **first-order Markov assumption**:
 
 ```text
 Bin 1        Bin 2        Bin 3        Bin 4
@@ -147,15 +116,7 @@ Following the original study, the transition matrix is initialized uniformly and
 
 After training, the **forward-backward algorithm** is used to calculate the posterior probability of each hidden state.
 
-A genomic bin is called differential when the posterior probability of an enriched state exceeds:
-
-```text
-ρ = 0.95
-```
-
-Consecutive differential bins are then merged into DHMS regions.
-
----
+A genomic bin is called differential when the posterior probability of an enriched state exceeds: ρ = 0.95. Consecutive differential bins are then merged into DHMS regions.
 
 ## Main parameters
 
@@ -168,7 +129,6 @@ Consecutive differential bins are then merged into DHMS regions.
 | Valid genome fraction `η` | 0.7 |
 | HMM training regions | 10,000 |
 
----
 
 ## Reproduction results
 
@@ -180,7 +140,6 @@ Consecutive differential bins are then merged into DHMS regions.
 | NPC-enriched regions | 889 | 484 |
 
 The preprocessing, Bayesian intensity estimation and emission stages closely reproduce the expected intermediate calculations. The final HMM calls remain below the values reported in the original publication.
----
 
 ## Exploratory genomic annotation
 
@@ -188,12 +147,7 @@ As an additional downstream analysis, reproduced DHMS regions were annotated usi
 
 When multiple transcripts correspond to the same gene, the transcript with the **longest coding region** is retained.
 
-Promoters are defined as:
-
-```text
-TSS ± 1 kb
-```
-
+Promoters are defined as: TSS ± 1 kb
 Each DHMS region is classified as:
 
 - **promoter**
@@ -201,7 +155,6 @@ Each DHMS region is classified as:
 - **intergenic**
 
 The annotation also reports the nearest gene and the distance from the DHMS region center to the nearest transcription start site.
----
 
 ## Figures
 
@@ -256,8 +209,6 @@ chipdiff-reproduction/
 
 The notebook contains exploratory analyses and intermediate inspection, while the reproducible implementation is contained in `src/` and `scripts/`.
 
----
-
 ## Running the analysis
 
 Install dependencies:
@@ -297,7 +248,6 @@ results/tables/dhms_regions_annotated.csv
 - `dhms_regions.csv` — consecutive differential bins merged into regions
 - `dhms_regions_annotated.csv` — RefSeq annotation of the reproduced regions
 
----
 
 ## Reproducibility notes
 
@@ -305,17 +255,6 @@ Some implementation details of the original method are not fully specified in th
 
 The objective of this project is therefore to reproduce the published computational workflow as closely as possible without tuning the method to force exact numerical agreement.
 
----
-
-## Reference
-
-Xu H, Wei C-L, Lin F, Sung W-K.  
-**An HMM approach to genome-wide identification of differential histone modification sites from ChIP-seq data.**  
-*Bioinformatics*. 2008;24(20):2344–2349.  
-doi:10.1093/bioinformatics/btn402
-
 ## License
 
-The original code in this repository is available under the [MIT License](LICENSE).
-
-External datasets, genome annotations and publications used in this project remain subject to their respective original licenses and terms of use.
+The original code in this repository is available under the [MIT License](LICENSE). External datasets, genome annotations and publications used in this project remain subject to their respective original licenses and terms of use.
