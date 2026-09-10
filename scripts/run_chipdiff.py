@@ -9,8 +9,8 @@ sys.path.insert(0,str(project_root/"src"))
 from chipdiff.pipeline import run_chipdiff_pipeline
 
 def main():
-    esc_file = project_root/'data/raw/GSM307619_ES.H3K27me3.aligned.txt.gz'
-    npc_file = project_root/'data/raw/GSM307614_NP.H3K27me3.aligned.txt.gz'
+    esc_file = project_root/'data/GSM307619_ES.H3K27me3.aligned.txt.gz'
+    npc_file = project_root/'data/GSM307614_NP.H3K27me3.aligned.txt.gz'
     chromosome_sizes_file = project_root/'metadata/mm8.chrom.sizes'
 
     results =  run_chipdiff_pipeline(esc_file = esc_file, npc_file=npc_file,

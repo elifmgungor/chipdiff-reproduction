@@ -8,7 +8,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 RESULTS_DIRECTORY = PROJECT_ROOT /'results/tables'
-FIGURES_DIRECTORY = PROJECT_ROOT /'results/ figures'
+FIGURES_DIRECTORY = PROJECT_ROOT /'results/figures'
 
 DHMS_REGIONS_FILE = RESULTS_DIRECTORY / 'dhms_regions.csv'
 DHMS_BINS_FILE = RESULTS_DIRECTORY / 'dhms_bins.csv'
